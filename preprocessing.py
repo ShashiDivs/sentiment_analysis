@@ -47,6 +47,7 @@ class TextPreprocessor:
     def step2_remove_html(self,text):
         clean_text = re.sub(r'<.*?>','', text) # this is good <br/> but
         return clean_text
+
     
     def step3_remove_urls(self,text):
         clean_text = re.sub(r'http\S+|www\S+|https\S+', '', text)
