@@ -10,8 +10,12 @@ from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 import joblib
-from matplotlib.pyplot import plt
+import matplotlib.pyplot as plt
 import seaborn as sns
+
+from logger import get_logger
+
+logger = get_logger(__name__)
 
 class SentimentModel:
 
@@ -22,7 +26,7 @@ class SentimentModel:
         self.history = {}
 
     def create_model(self):
-
+        
         models = {
             'naive_bayes': MultinomialNB(alpha=1.0),
             'logistic_regression': LogisticRegression(
@@ -55,4 +59,40 @@ class SentimentModel:
         self.model.fit(X_train, y_train)
 
         train_pred = self.model.predict(X_train)
-        train_acc = accuracy_score(y_train,train_pred)
+        train_acc = accuracy_score(y_train, train_pred)
+
+        print(f"Training Accuracy: {train_acc:.4f} ({train_acc*100:.2f})%")
+
+        # Evaluation on validation data if provided
+
+        if X_val is not None and y_val is not None:
+            val_pred = self.model.predict(X_val)
+            val_acc = accuracy_score(y_val, val_pred)
+
+            print(f"Validation Accuracy: {val_acc:.4f} ({val_acc*100:.2f})%")
+
+            self.history['val_accuracy'] = val_acc
+        
+        self.history['train_accuracy'] = train_acc
+        
+        return self.model
+    
+    def evaluate(self, X_test, y_test):
+
+        """Evcaluate model performamnce"""
+
+        y_pred = self.model.predict(X_test)
+
+        metrics = {
+            'accuracy':accuracy_score(y_test, y_pred),
+            'precision':precision_score(y_test,y_pred),
+            'recall':recall_score(y_test,y_pred),
+            "f1_score":f1_score(y_test,y_pred)
+        }
+
+        cm = confusion_matrix(y_test,y_pred)
+        logger.info(f"These are confusion metrics {cm}")
+
+        return metrics
+    
+

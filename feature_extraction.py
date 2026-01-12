@@ -13,9 +13,9 @@ class FeatureExractior:
         self.max_features = max_features
         self.vectorizer = None
 
-    
+   
     def fit_transform(self, documents):
-        
+       
         """Fit and transform document to feature vectors"""
 
         if self.method == 'bow':
@@ -30,22 +30,22 @@ class FeatureExractior:
                 min_df=2,
                 max_df=0.8
             )
-        
+       
         feature_matrix = self.vectorizer.fit_transform(documents)
 
         print(feature_matrix.shape)
         print(len(self.vectorizer.vocabulary_))
 
         return feature_matrix
-    
+   
     def transform(self, documents):
         """Transform new documents using the appropriate vectoriser"""
 
         if self.vectorizer is None:
             raise ValueError("vectoriser not fitted yet, call the fit_transofrm intitally")
-        
+       
         return self.vectorizer.transform(documents)
-    
+   
     def get_feature_names(self):
 
         """Get feature names"""
@@ -53,7 +53,7 @@ class FeatureExractior:
         if self.vectorizer is None:
             return []
         return self.vectorizer.get_feature_names_out()
-    
+   
 
 if __name__ == "__main__":
     sample_docs = [
